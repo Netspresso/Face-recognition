@@ -5,24 +5,31 @@ trained_face_data = cv2.CascadeClassifier(
     'haarcascade_frontalface_default.xml')
 
 # Choose an image to detect faces in
-img = cv2.imread('gal-gadot.jpg')
-# img = cv2.imread('palka.jpg')
+webcam = cv2.VideoCapture(0)
 
-# Convert img into grayscale
-grayscaled_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# Iterate forere over frames
+while True:
 
-# Detect faces
-face_coordinates = trained_face_data.detectMultiScale(grayscaled_img)
+    # Read the current frame
+    succesful_frame_read, frame = webcam.read()
 
-# drow rectangle around face
-(x, y, w, h) = face_coordinates[-1]
+    # Convert img into grayscale
+    grayscaled_img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    # Detect faces
+    face_coordinates = trained_face_data.detectMultiScale(grayscaled_img)
 
-# print(face_coordinates)
+    # drow rectangle around face
+    for (x, y, w, h) in face_coordinates:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-#
-cv2.imshow('Face detector', img)
-cv2.waitKey()
+    # Display the img
+    cv2.imshow('Face detector', frame)
+    key = cv2.waitKey(1)
 
-print("Code completed")
+    # Stop programm when Q key is pressed
+    if key == 81 or key == 113:
+        break
+
+# Release the VideoCapture object
+webcam.release()
